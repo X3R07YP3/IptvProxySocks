@@ -5,12 +5,12 @@
         "description":  "Todo el trÃ¡fico IPTV sale por un proxy SOCKS5 (sin fallback). Filtra por regiÃ³n, separa Live TV de Pelis/Series (biblioteca aparte vÃ­a .strm), excluye adultos, deduplica y ordena listas M3U gigantes.",
         "versions":  [
                          {
-                             "changelog":  "Corrige el contador de la importación (mostraba \u0027undefined canales\u0027). El zip incluye DLL + meta.json.",
-                             "version":  "1.0.1.0",
-                             "checksum":  "ee9c1f916e14d0c0ea5a069948f6c349",
-                             "timestamp":  "2026-11-12T13:02:47Z",
+                             "changelog":  "Streaming directo sin buffer: los canales arrancan al instante y ya no se quedan cargando. Solo las mini-listas HLS se reescriben en memoria.",
+                             "version":  "1.0.2.0",
+                             "checksum":  "c4c89094560df3f0981350183d87e5d7",
+                             "timestamp":  "2026-11-12T13:19:58Z",
                              "targetAbi":  "12.4.0.0",
-                             "sourceUrl":  "https://github.com/X3R07YP3/IptvProxySocks/releases/download/1.0.1/iptvproxysocks_1.0.1.0.zip"
+                             "sourceUrl":  "https://github.com/X3R07YP3/IptvProxySocks/releases/download/1.0.2/iptvproxysocks_1.0.2.0.zip"
                          }
                      ],
         "category":  "LiveTV",

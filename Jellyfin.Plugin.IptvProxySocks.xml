@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Jellyfin.Plugin.IptvProxySocks</name>
+    </assembly>
+    <members>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.Api.IptvProxyController">
+            <summary>
+            Endpoints del proxy. playlist/channel/res son anónimos a propósito: el sintonizador
+            M3U de Jellyfin los pide sin credenciales de usuario.
+            </summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.IptvProxySocks.Api.IptvProxyController.Playlist(System.String)">
+            <summary>GET /Plugins/IptvProxy/playlist?kind=live — solo canales Live, ya filtrados y ordenados.</summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.IptvProxySocks.Api.IptvProxyController.Resource(System.String,System.Threading.CancellationToken)">
+            <summary>Recursos HLS reescritos (segmentos, sublistas, keys). Token opaco, sin SSRF: solo URLs registradas.</summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.Configuration.PluginConfiguration">
+            <summary>
+            Configuración persistida del plugin. Sin secretos en texto plano fuera de este fichero
+            protegido por Jellyfin (solo accesible al admin).
+            </summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.IptvProxySocks.Configuration.PluginConfiguration.ProxyPassword">
+            <summary>Contraseña SOCKS5. Se guarda en el XML de configuración del plugin (solo root/admin).</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.IptvProxySocks.Configuration.PluginConfiguration.M3uSource">
+            <summary>URL http(s) o ruta local del M3U original.</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.IptvProxySocks.Configuration.PluginConfiguration.IncludedRegions">
+            <summary>Regiones a incluir, ej. "ES,UK". Vacío = todas.</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.IptvProxySocks.Configuration.PluginConfiguration.ExcludedGroups">
+            <summary>Grupos a excluir (uno por línea, admite * como comodín).</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.IptvProxySocks.Configuration.PluginConfiguration.PreferBestQuality">
+            <summary>Preferencia de calidad al deduplicar: FHD > HD > SD > resto.</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.IptvProxySocks.Configuration.PluginConfiguration.StrmOutputDir">
+            <summary>Carpeta aislada para .strm de VOD/Series (NO mezclar con librerías locales).</summary>
+        </member>
+        <member name="P:Jellyfin.Plugin.IptvProxySocks.Configuration.PluginConfiguration.PublicBaseUrl">
+            <summary>Host público que verán los clientes en las URLs (en Docker: IP/host LAN o dominio). Vacío = se calcula por petición.</summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.Plugin">
+            <summary>Clase principal del plugin.</summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.ServiceRegistrator">
+            <summary>Registra los servicios del plugin en el contenedor DI de Jellyfin.</summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.Services.IptvImportService">
+            <summary>Importa el M3U original, clasifica, filtra y ordena. Sin tráfico directo fuera del proxy salvo la descarga inicial del M3U.</summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.Services.ChannelOrganizer">
+            <summary>Reglas de clasificación, filtrado y orden. Probadas contra la lista de ejemplo (25k entradas).</summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.Services.Socks5Connector">
+            <summary>
+            Cliente HTTP cuyas conexiones salen SIEMPRE por SOCKS5 (RFC 1928 + auth RFC 1929).
+            No hay fallback directo: si el proxy falla, la petición falla.
+            </summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.Services.IptvState">
+            <summary>Estado en memoria: canales importados + mapeo de recursos HLS a URLs originales.</summary>
+        </member>
+        <member name="M:Jellyfin.Plugin.IptvProxySocks.Services.IptvState.RegisterResource(System.String,System.String)">
+            <summary>Registra una URL original y devuelve un token opaco para exponer al reproductor.</summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.Services.HlsRewriter">
+            <summary>
+            Reescritura de playlists HLS: toda URI interna (segmentos, sublistas, KEY, MAP, MEDIA,
+            I-FRAME) se sustituye por una URL opaca del proxy. Sin sustituciones indiscriminadas.
+            </summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.Services.StrmExporter">
+            <summary>
+            Exporta VOD/Series a ficheros .strm en una carpeta AISLADA (ej. /media/iptv-vod).
+            Esa carpeta se añade en Jellyfin como biblioteca aparte; nunca dentro de tus
+            carpetas de contenido local.
+            </summary>
+        </member>
+        <member name="T:Jellyfin.Plugin.IptvProxySocks.Tasks.RefreshTask">
+            <summary>Reimportación periódica de la lista (cada 12h por defecto).</summary>
+        </member>
+    </members>
+</doc>
